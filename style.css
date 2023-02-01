@@ -4,15 +4,34 @@ table{
 }
 
 td{
+  position: relative;
   width: 80px;
   height: 80px;
-  text-align: center;
 }
 
-.lightChecker{
+.light-checker{
   background-color: #F0D2B4;
 }
 
-.darkChecker{
+.dark-checker{
   background-color: #BA7A3A;
+}
+
+.playing-piece{
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 4px solid white;
+  cursor: pointer;
+}
+
+.red-piece{
+  background-color: red;
+}
+
+.black-piece{
+  background-color: black;
 }
