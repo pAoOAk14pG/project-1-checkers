@@ -13,6 +13,10 @@ let boardState = [
 let turn = false; //false for red's turn, true for black's turn
 let pieceID;
 let pieceIndex;
+let redPiecesLeft = 12;
+let blackPiecesLeft = 12;
+let capturePieceIndex = [-1. -1, -1, -1];
+let captureMovementIndex = [-1, -1, -1, -1];
 
 function markChecker(checkerID){
   $("#" + checkerID.toString()).addClass("selected-checker");
@@ -45,28 +49,122 @@ const manageCheckers = (e) => {
     boardState[pieceIndex] = null;
     $("#" + pieceIndex.toString()).empty();
     turn = Boolean(turn ^ 1) //Bitwise XOR used as hacky way to toggle a boolean
-    console.log(turn)
     modifyTurnText();
     removeMarkedCheckers();
   }
 }
 
-function handleMovementValidity(){
-  removeMarkedCheckers();
-  if (pieceID <= 74 && turn === false){ //Red pieces must have an ID smaller than 75
-    if(pieceIndex % 8 != 0 && boardState[pieceIndex + 7] === null){ //Is this red checker piece NOT on the left side of the board, and if not, is the left diagonal space below it empty?
-      markChecker(pieceIndex + 7);
+function checkLeftUpDiagonal(){
+  if (pieceIndex % 8 != 0 && pieceIndex >= 10){
+    if (pieceIndex % 8 != 1 && pieceIndex >= 19){
+      if (turn === false && boardState[pieceIndex - 9] >= 75){
+        if (boardState[pieceIndex - 18] === null){
+          capturePieceIndex[0] = pieceIndex - 9;
+          captureMovementIndex[0] = pieceIndex - 18;
+          markChecker(pieceIndex - 18);
+        }
+      }
+      if (turn === true && (boardState[pieceIndex - 9] - 63) >= 0){
+        if (boardState[pieceIndex - 18] === null){
+          capturePieceIndex[0] = pieceIndex - 9;
+          captureMovementIndex[0] = pieceIndex - 18;
+          markChecker(pieceIndex - 18);
+        }
+      }
     }
-    if(pieceIndex % 8 != 7 && boardState[pieceIndex + 9] === null){ //Is this red checker piece NOT on the right side of the board, and if not, is the right diagonal space below it empty?
-      markChecker(pieceIndex + 9);
-    }
-  }else if (pieceID >= 75 && turn === true){//Black pieces must have an ID greater than 74
-    if(pieceIndex % 8 != 0 && boardState[pieceIndex - 9] === null){ //Is this black checker piece NOT on the left side of the board, and if not, is the left diagonal space above it empty?
+    if (boardState[pieceIndex - 9] == null){
       markChecker(pieceIndex - 9);
     }
-    if(pieceIndex % 8 != 7 && boardState[pieceIndex - 7] === null){ //Is this black checker piece NOT on the right side of the board, and if not, is the right diagonal space above it empty?
+  }
+  return 0;
+}
+
+function checkRightUpDiagonal(){
+  if (pieceIndex % 8 != 7 && pieceIndex >= 8){
+    if (pieceIndex % 8 != 6 && pieceIndex >= 19){
+      if (turn === false && boardState[pieceIndex - 7] >= 75){
+        if (boardState[pieceIndex - 14] === null){
+          capturePieceIndex[1] = pieceIndex - 7;
+          captureMovementIndex[1] = pieceIndex - 14;
+          markChecker(pieceIndex - 14);
+        }
+      }
+      if (turn === true && (boardState[pieceIndex - 7] - 63) >= 0){
+        if (boardState[pieceIndex - 14] === null){
+          capturePieceIndex[1] = pieceIndex - 7;
+          captureMovementIndex[1] = pieceIndex - 14;
+          markChecker(pieceIndex - 14);
+        }
+      }
+    }
+    if (boardState[pieceIndex - 7] == null){
       markChecker(pieceIndex - 7);
     }
+  }
+  return 0;
+}
+
+function checkLeftDownDiagonal(){
+  if (pieceIndex % 8 != 0 && pieceIndex <= 55){
+    if (pieceIndex % 8 != 1 && pieceIndex <= 46){
+      if (turn === false && boardState[pieceIndex + 7] >= 75){
+        if (boardState[pieceIndex + 14] === null){
+          capturePieceIndex[2] = pieceIndex + 7;
+          captureMovementIndex[2] = pieceIndex + 14;
+          markChecker(pieceIndex + 14);
+        }
+      }
+      if (turn === true && (boardState[pieceIndex + 7] - 63) >= 0){
+        if (boardState[pieceIndex + 14] === null){
+          capturePieceIndex[2] = pieceIndex + 7;
+          captureMovementIndex[2] = pieceIndex + 14;
+          markChecker(pieceIndex + 14);
+        }
+      }
+    }
+    if (boardState[pieceIndex + 7] == null){
+      markChecker(pieceIndex + 7)
+    }
+  }
+  return 0;
+}
+
+function checkRightDownDiagonal(){
+  if (pieceIndex % 8 != 7 && pieceIndex <= 53){
+    if (pieceIndex % 8 != 6 && pieceIndex <= 42){
+      if (turn === false && boardState[pieceIndex + 9] >= 75){
+        if (boardState[pieceIndex + 18] === null){
+          capturePieceIndex[3] = pieceIndex + 9;
+          captureMovementIndex[3] = pieceIndex + 18;
+          markChecker(pieceIndex + 18);
+        }
+      }
+      if (turn === true && (boardState[pieceIndex + 9] - 63) >= 0){
+        if (boardState[pieceIndex + 18] === null){
+          capturePieceIndex[3] = pieceIndex + 9;
+          captureMovementIndex[3] = pieceIndex + 18;
+          markChecker(pieceIndex + 18);
+        }
+      }
+    }
+    if (boardState[pieceIndex + 9] == null){
+      markChecker(pieceIndex + 9);
+    }
+  }
+  return 0;
+}
+
+function handleMovementValidity(){
+  capturePieceIndex = [-1. -1, -1, -1];
+  captureMovementIndex = [-1, -1, -1, -1];
+  removeMarkedCheckers();
+  if (pieceID <= 74 && turn === false){
+    checkLeftDownDiagonal();
+    checkRightDownDiagonal();
+  }
+  else if (pieceID >= 75 && turn === true){
+    checkLeftUpDiagonal();
+    checkRightUpDiagonal();
   }
   return 0;
 }
