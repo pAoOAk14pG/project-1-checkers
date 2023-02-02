@@ -47,6 +47,21 @@ function modifyTurnText(){
   return 0;
 }
 
+function analyzeBoardState(){
+  if (redPiecesLeft <= 0){
+    $("h2").html("Black wins! (Red ran out of pieces)");
+    $(".playing-piece").off("click");
+    $("td").off("click");
+
+  }
+  if (blackPiecesLeft <= 0){
+    $("h2").html("Red wins! (Black ran out of pieces)");
+    $(".playing-piece").off("click");
+    $("td").off("click");
+  }
+  return 0;
+}
+
 const manageCheckers = (e) => {
   if ($(e.target).hasClass("selected-checker") === true){;
     let moveCheckerID = parseInt($(e.target).attr("id"));
@@ -58,8 +73,8 @@ const manageCheckers = (e) => {
       let removePieceID = capturePieceIndex[captureMovementIndex.indexOf(moveCheckerID)];
       boardState[removePieceID] = null;
       $("#" + removePieceID.toString()).empty();
-      if (turn === false){redPiecesLeft--;}
-      else{blackPiecesLeft--;}
+      if (turn === false){blackPiecesLeft--;}
+      else{redPiecesLeft--;}
     }
     if (turn === false && moveCheckerID >= 56){
       $("#" + pieceID.toString()).addClass("king-piece");
@@ -70,6 +85,7 @@ const manageCheckers = (e) => {
     turn = Boolean(turn ^ 1) //Bitwise XOR used as hacky way to toggle a boolean
     clearCapturePieceArrays();
     modifyTurnText();
+    analyzeBoardState();
     removeMarkedCheckers();
   }
 }
@@ -84,11 +100,11 @@ function checkLeftUpDiagonal(){
           markChecker(pieceIndex - 18);
         }
       }
-      if (turn === true && (boardState[pieceIndex - 9] - 63) >= 0){
-        if (boardState[pieceIndex - 18] === null){
-          capturePieceIndex[0] = pieceIndex - 9;
-          captureMovementIndex[0] = pieceIndex - 18;
-          markChecker(pieceIndex - 18);
+      if (turn === true && boardState[pieceIndex - 9] <= 74){
+        if (boardState[pieceIndex - 18] === null && boardState[pieceIndex - 9] >= 63){
+            capturePieceIndex[0] = pieceIndex - 9;
+            captureMovementIndex[0] = pieceIndex - 18;
+            markChecker(pieceIndex - 18);
         }
       }
     }
@@ -109,8 +125,8 @@ function checkRightUpDiagonal(){
           markChecker(pieceIndex - 14);
         }
       }
-      if (turn === true && (boardState[pieceIndex - 7] - 63) >= 0){
-        if (boardState[pieceIndex - 14] === null){
+      if (turn === true && boardState[pieceIndex - 7] <= 74){
+        if (boardState[pieceIndex - 14] === null && boardState[pieceIndex - 7] >= 63){
           capturePieceIndex[1] = pieceIndex - 7;
           captureMovementIndex[1] = pieceIndex - 14;
           markChecker(pieceIndex - 14);
@@ -134,8 +150,8 @@ function checkLeftDownDiagonal(){
           markChecker(pieceIndex + 14);
         }
       }
-      if (turn === true && (boardState[pieceIndex + 7] - 63) >= 0){
-        if (boardState[pieceIndex + 14] === null){
+      if (turn === true && boardState[pieceIndex + 7] <= 74){
+        if (boardState[pieceIndex + 14] === null && boardState[pieceIndex + 7] >= 63){
           capturePieceIndex[2] = pieceIndex + 7;
           captureMovementIndex[2] = pieceIndex + 14;
           markChecker(pieceIndex + 14);
@@ -151,7 +167,7 @@ function checkLeftDownDiagonal(){
 
 function checkRightDownDiagonal(){
   if (pieceIndex % 8 != 7 && pieceIndex <= 53){
-    if (pieceIndex % 8 != 6 && pieceIndex <= 42){
+    if (pieceIndex % 8 != 6 && pieceIndex <= 44){
       if (turn === false && boardState[pieceIndex + 9] >= 75){
         if (boardState[pieceIndex + 18] === null){
           capturePieceIndex[3] = pieceIndex + 9;
@@ -159,8 +175,8 @@ function checkRightDownDiagonal(){
           markChecker(pieceIndex + 18);
         }
       }
-      if (turn === true && (boardState[pieceIndex + 9] - 63) >= 0){
-        if (boardState[pieceIndex + 18] === null){
+      if (turn === true && boardState[pieceIndex + 9] <= 74){
+        if (boardState[pieceIndex + 18] === null && boardState[pieceIndex + 9] >= 63){
           capturePieceIndex[3] = pieceIndex + 9;
           captureMovementIndex[3] = pieceIndex + 18;
           markChecker(pieceIndex + 18);
@@ -178,10 +194,18 @@ function handleMovementValidity(){
   clearCapturePieceArrays();
   removeMarkedCheckers();
   if (pieceID <= 74 && turn === false){
+    if ($("#" + pieceID.toString()).hasClass("king-piece") === true){
+      checkLeftUpDiagonal();
+      checkRightUpDiagonal();
+    }
     checkLeftDownDiagonal();
     checkRightDownDiagonal();
   }
   else if (pieceID >= 75 && turn === true){
+    if ($("#" + pieceID.toString()).hasClass("king-piece") === true){
+      checkLeftDownDiagonal();
+      checkRightDownDiagonal();
+    }
     checkLeftUpDiagonal();
     checkRightUpDiagonal();
   }
