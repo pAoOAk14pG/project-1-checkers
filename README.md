@@ -24,5 +24,3 @@ To win the game, simply capture all your opponent's pieces, or force him into a 
 - Force players to capture if _any_ piece has a capture option available
 - Add sound effects
 - Add animation effects (this will probably require a complete refactoring of the code lmao)
-
-(On a side note, did you know VSC automatically removes spaces at the end of lines? I didn't!)
