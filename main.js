@@ -18,6 +18,12 @@ let blackPiecesLeft = 12;
 let capturePieceIndex = [-1. -1, -1, -1];
 let captureMovementIndex = [-1, -1, -1, -1];
 
+function clearCapturePieceArrays(){
+  capturePieceIndex = [-1. -1, -1, -1];
+  captureMovementIndex = [-1, -1, -1, -1];
+  return 0;
+}
+
 function markChecker(checkerID){
   $("#" + checkerID.toString()).addClass("selected-checker");
   return 0;
@@ -48,7 +54,16 @@ const manageCheckers = (e) => {
     $("#" + pieceID.toString()).appendTo($(e.target));
     boardState[pieceIndex] = null;
     $("#" + pieceIndex.toString()).empty();
+    if (captureMovementIndex.includes(moveCheckerID) === true){
+      debugger;
+      let removePieceID = capturePieceIndex[captureMovementIndex.indexOf(moveCheckerID)];
+      boardState[removePieceID] = null;
+      $("#" + removePieceID.toString()).empty();
+      if (turn === false){redPiecesLeft--;}
+      else{blackPiecesLeft--;}
+    }
     turn = Boolean(turn ^ 1) //Bitwise XOR used as hacky way to toggle a boolean
+    clearCapturePieceArrays();
     modifyTurnText();
     removeMarkedCheckers();
   }
@@ -155,8 +170,7 @@ function checkRightDownDiagonal(){
 }
 
 function handleMovementValidity(){
-  capturePieceIndex = [-1. -1, -1, -1];
-  captureMovementIndex = [-1, -1, -1, -1];
+  clearCapturePieceArrays();
   removeMarkedCheckers();
   if (pieceID <= 74 && turn === false){
     checkLeftDownDiagonal();
