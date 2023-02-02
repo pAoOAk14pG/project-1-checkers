@@ -55,7 +55,6 @@ const manageCheckers = (e) => {
     boardState[pieceIndex] = null;
     $("#" + pieceIndex.toString()).empty();
     if (captureMovementIndex.includes(moveCheckerID) === true){
-      debugger;
       let removePieceID = capturePieceIndex[captureMovementIndex.indexOf(moveCheckerID)];
       boardState[removePieceID] = null;
       $("#" + removePieceID.toString()).empty();
