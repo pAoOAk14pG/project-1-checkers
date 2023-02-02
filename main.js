@@ -19,33 +19,54 @@ function markChecker(checkerID){
   return 0;
 }
 
-const isValidCheckerNextClicked = (e) => {
-  console.log($(e.target))
-  if($(e.target).hasClass("selected-checker") === true){
+function removeMarkedCheckers(){
+  $("td").removeClass("selected-checker");
+  return 0;
+}
+
+function modifyTurnText(){
+  if (turn === false){
+    $("h2").html("Red's turn (moves towards bottom)");
+  }else if(turn === true){
+    $("h2").html("Black's turn (moves towards top)")
+  }
+  else{
+    alert("Something's gone wrong here.");
+    return -1;
+  }
+  return 0;
+}
+
+const manageCheckers = (e) => {
+  if ($(e.target).hasClass("selected-checker") === true){;
     let moveCheckerID = parseInt($(e.target).attr("id"));
     boardState[moveCheckerID] = pieceID;
-    $("#" + pieceIndex.toString()).appendTo("#" + moveCheckerID.toString());
+    $("#" + pieceID.toString()).appendTo($(e.target));
     boardState[pieceIndex] = null;
     $("#" + pieceIndex.toString()).empty();
     turn = Boolean(turn ^ 1) //Bitwise XOR used as hacky way to toggle a boolean
-    console.log(turn);
+    console.log(turn)
+    modifyTurnText();
+    removeMarkedCheckers();
   }
 }
 
 function handleMovementValidity(){
-  let validSpaceFound = false;
+  removeMarkedCheckers();
   if (pieceID <= 74 && turn === false){ //Red pieces must have an ID smaller than 75
     if(pieceIndex % 8 != 0 && boardState[pieceIndex + 7] === null){ //Is this red checker piece NOT on the left side of the board, and if not, is the left diagonal space below it empty?
       markChecker(pieceIndex + 7);
-      validSpaceFound = true;
     }
     if(pieceIndex % 8 != 7 && boardState[pieceIndex + 9] === null){ //Is this red checker piece NOT on the right side of the board, and if not, is the right diagonal space below it empty?
       markChecker(pieceIndex + 9);
-      validSpaceFound = true;
     }
-  }
-  if (validSpaceFound === true){
-    $(document).one("click", isValidCheckerNextClicked);
+  }else if (pieceID >= 75 && turn === true){//Black pieces must have an ID greater than 74
+    if(pieceIndex % 8 != 0 && boardState[pieceIndex - 9] === null){ //Is this black checker piece NOT on the left side of the board, and if not, is the left diagonal space above it empty?
+      markChecker(pieceIndex - 9);
+    }
+    if(pieceIndex % 8 != 7 && boardState[pieceIndex - 7] === null){ //Is this black checker piece NOT on the right side of the board, and if not, is the right diagonal space above it empty?
+      markChecker(pieceIndex - 7);
+    }
   }
   return 0;
 }
@@ -59,6 +80,7 @@ const handlePieces = (e) => {
 
 function main(){
   $(".playing-piece").on("click", handlePieces);
+  $("td").on("click", manageCheckers);
   return 0;
 }
 
