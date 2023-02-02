@@ -16,6 +16,7 @@ To win the game, simply capture all your opponent's pieces, or force him into a 
 
 ## TODO LIST
 
+- Refactor code so it's not a field of copy and paste
 - Implement a win condition for leaving your opponent in a position where they can make no moves
 - Implement successive jumps
 - Force players to capture if they choose to move a piece that has a capture option available
