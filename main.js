@@ -61,6 +61,12 @@ const manageCheckers = (e) => {
       if (turn === false){redPiecesLeft--;}
       else{blackPiecesLeft--;}
     }
+    if (turn === false && moveCheckerID >= 56){
+      $("#" + pieceID.toString()).addClass("king-piece");
+    }
+    if (turn === true && moveCheckerID <= 7){
+      $("#" + pieceID.toString()).addClass("king-piece");
+    }
     turn = Boolean(turn ^ 1) //Bitwise XOR used as hacky way to toggle a boolean
     clearCapturePieceArrays();
     modifyTurnText();
