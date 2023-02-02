@@ -13,6 +13,7 @@ A checkerpiece that reaches the back row is "kinged", and can henceforth move an
 To win the game, simply capture all your opponent's pieces, or force him into a position where they are unable to move any of their pieces (although that latter win condition has also not been implemented here due to ~~attention deficit~~ time constraints.)
 
 ## TODO LIST
+ * Add comments so the .js file isn't a complete blob of incomprehensible text
  * Implement a win condition for leaving your opponent in a position where they can make no moves
  * Implement successive jumps
  * Force players to capture if they choose to move a piece that has a capture option available
