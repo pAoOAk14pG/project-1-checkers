@@ -1,6 +1,6 @@
 # Simple Checkers
 
-A really, _really_ rudimentary implementation of hotseat checkers using JQuery.  
+A really, _really_ rudimentary implementation of hotseat checkers using JQuery, with a bit of Bootstrap on the side for miscellaneous elements.
 Play it here: https://paooak14pg.github.io/project-1-checkers/
 
 ## How to play
